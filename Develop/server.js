@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const db = require('./db/db.json');
+// const shortid = require('shortid');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,32 +17,56 @@ app.get('/notes', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/notes.html'))
+    res.sendFile(path.join(__dirname, '/public/index.html'))
 })
+
 
 app.get('/api/notes/', (req, res) => {
     return res.json(db);
 })
 
+// add notes to db with a unique id
 app.post('/api/notes', (req, res) => {
     const newNote = req.body;
     db.push(newNote)
+    for (let i = 0; i < db.length; i++) {
+        db[i].id = i+1;
+    }
+    console.log(db);
     res.json(newNote);
 })
-// app.post('/api/characters', (req, res) => {
-//     const newCharacter = req.body;
-//     newCharacter.routeName = newCharacter.name.toLowerCase();
-  
-//     // BONUS: Use a RegEx Pattern to remove spaces from newCharacter
-//     // Your code here
-  
-//     console.log(newCharacter);
-  
-//     characters.push(newCharacter);
-  
-//     res.json(newCharacter);
-//   });
 
+// Get request with specific ID
+app.get('/api/notes/:id', (req, res) => {
+    const chosen = req.params.id;
+    console.log(chosen)
+
+    for ( let i = 0; i<db.length; i++ ) {
+        if (chosen == db[i].id) {
+            return res.json(db[i]);
+        }
+    }
+    return res.json(db)
+})
+
+// return all other alternative routes to index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+})
+
+// app.get('/api/characters/:character', (req, res) => {
+    //     const chosen = req.params.character;
+    
+    //     console.log(chosen);
+  
+//     for (let i = 0; i < characters.length; i++) {
+//       if (chosen.toLowerCase() === characters[i].routeName) {
+//         return res.json(characters[i]);
+//       }
+//     }
+  
+//     return res.json(false);
+//   });
 
 app.listen(PORT, () => {
   console.log(`API server now on port ${PORT}!`);

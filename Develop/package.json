@@ -11,7 +11,8 @@
     "ajax": "0.0.4",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {},
   "description": ""
